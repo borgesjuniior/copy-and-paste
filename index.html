@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copia Código</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background-color: #000;
+            font-family: 'Courier New', Courier, monospace;
+            color: #00ff00;
+        }
+        .terminal {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            border: 2px solid #005500;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 85, 0, 0.5);
+            background-color: #000;
+        }
+        .cursor {
+            display: inline-block;
+            animation: blink 1s step-end infinite;
+            margin-right: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #000;
+            background-color: #00ff00;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            margin-left: 10px;
+        }
+        button:hover {
+            background-color: #008000;
+            color: #fff;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .footer {
+            margin-top: 20px;
+            color: #00ff00;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+        .blinking {
+            display: inline-block;
+            animation: blink 1s step-end infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <span>#</span>
+        <span class="cursor">_</span>
+        <button id="copyButton">Copiar Código</button>
+    </div>
+    <div class="footer"><span class="blinking">#_</span> <span id="footerMessage"></span></div>
+
+    <script>
+        document.getElementById('copyButton').addEventListener('click', () => {
+            fetch('bundle.js') 
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erro ao buscar o arquivo: ' + response.statusText);
+                    }
+                    return response.text();
+                })
+                .then(codeToCopy => {
+                    navigator.clipboard.writeText(codeToCopy).then(() => {
+                        alert('Código copiado para a área de transferência!');
+                    }).catch(err => {
+                        console.error('Erro ao copiar: ', err);
+                    });
+                })
+                .catch(err => {
+                    console.error('Erro ao buscar o arquivo: ', err);
+                });
+        });
+
+        function typeEffect(text, element, delay) {
+            let index = 0;
+            function type() {
+                if (index < text.length) {
+                    element.textContent += text.charAt(index);
+                    index++;
+                    setTimeout(type, delay);
+                }
+            }
+            type();
+        }
+
+        const footerMessage = "Desenvolvido por Júnior";
+        const footerElement = document.getElementById('footerMessage');
+        typeEffect(footerMessage, footerElement, 100);
+    </script>
+</body>
+</html>
